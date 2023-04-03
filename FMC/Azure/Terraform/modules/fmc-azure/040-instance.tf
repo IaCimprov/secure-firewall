@@ -25,9 +25,9 @@ resource "azurerm_windows_virtual_machine" "win10" {
     version   = "latest"
   }
 
-  tags = {
+  tags = merge({
     environment = "win10"
-  }
+  }, var.tags)
 
 }
 
@@ -61,9 +61,9 @@ resource "azurerm_linux_virtual_machine" "linuxvm" {
     public_key = file("~/.ssh/id_rsa.pub")
   }
 
-  tags = {
-    environment = "production"
-  }
+  tags = merge({
+    environment = "linux"
+  }, var.tags)
 }
 
 
@@ -103,7 +103,7 @@ resource "azurerm_linux_virtual_machine" "fmcv" {
     public_key = file("~/.ssh/id_rsa.pub")
   }
 
-  tags = {
-    environment = "production"
-  }
+  tags = merge({
+    environment = "linux"
+  }, var.tags)
 }

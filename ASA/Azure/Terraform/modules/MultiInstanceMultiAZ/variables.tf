@@ -92,3 +92,11 @@ variable "subnets" {
   default     = []
   description = "subnets for FTD interfaces"
 }
+
+variable "tags" {
+  description = "tags to map with resources ."
+  type        = map(any)
+  default = {
+    env = "dev"
+  }
+}

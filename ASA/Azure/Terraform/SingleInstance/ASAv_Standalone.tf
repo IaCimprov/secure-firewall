@@ -26,7 +26,10 @@ provider "azurerm" {
 module "asa-azure" {
   source = "../modules/SingleInstance"
   // If you dont provide any value, it will take the default value
-
+  // Tags to map with resources
+  tags = {
+    env = "prod"
+  }
   // Resorce group Location
   location = "centralindia"
   // This would prefix all the component with this string.

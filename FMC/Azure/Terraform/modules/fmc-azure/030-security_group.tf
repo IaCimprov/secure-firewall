@@ -62,9 +62,9 @@ resource "azurerm_network_security_group" "nsg" {
     destination_address_prefix = "*"
   }
 
-  tags = {
+  tags = merge({
     environment = "production"
-  }
+  }, var.tags)
 }
 
 resource "azurerm_network_security_group" "default" {
@@ -96,7 +96,7 @@ resource "azurerm_network_security_group" "default" {
   }
 
 
-  tags = {
+  tags = merge({
     environment = "production"
-  }
+  }, var.tags)
 }

@@ -35,3 +35,11 @@ variable "instancepassword" {
 variable "day-0-config" {
   default = "ASA_Running_Config.txt"
 }
+
+variable "tags" {
+  description = "tags to map with resources ."
+  type        = map(any)
+  default = {
+    env = "dev"
+  }
+}

@@ -33,6 +33,7 @@ resource "azurerm_resource_group" "asav" {
   count    = var.create_rg ? 1 : 0
   name     = var.rg_name
   location = var.location
+  tags     = var.tags
 }
 
 #########################################################################################################################
@@ -45,6 +46,7 @@ resource "azurerm_virtual_network" "asav" {
   location            = var.location
   resource_group_name = local.rg_name
   address_space       = [var.vn_cidr]
+  tags                = var.tags
 }
 
 resource "azurerm_subnet" "subnets" {
@@ -64,6 +66,7 @@ resource "azurerm_route_table" "asav" {
   name                = "${var.prefix}-${each.key}"
   location            = var.location
   resource_group_name = local.rg_name
+  tags                = var.tags
 }
 
 resource "azurerm_route" "internal" {
@@ -89,6 +92,7 @@ resource "azurerm_network_security_group" "allow-all" {
   name                = "${var.prefix}-allow-all"
   location            = var.location
   resource_group_name = local.rg_name
+  tags                = var.tags
 
   security_rule {
     name                       = "TCP-Allow-All"
@@ -107,6 +111,7 @@ resource "azurerm_network_security_group" "ilb-allow-all" {
   name                = "${var.prefix}-ilb-allow-all"
   location            = var.location
   resource_group_name = local.rg_name
+  tags                = var.tags
 
   security_rule {
     name                       = "TCP-Allow-All-Internal-Inbound"
@@ -136,6 +141,7 @@ resource "azurerm_network_security_group" "elb-allow-all" {
   name                = "${var.prefix}-elb-allow-all"
   location            = var.location
   resource_group_name = local.rg_name
+  tags                = var.tags
 
   security_rule {
     name                       = "TCP-Allow-All-External-Inbound"
@@ -173,6 +179,7 @@ resource "azurerm_public_ip" "asav-mgmt-interface" {
   sku                 = var.instances > 1 ? "Standard" : "Basic"
   resource_group_name = local.rg_name
   allocation_method   = var.instances > 1 ? "Static" : "Dynamic"
+  tags                = var.tags
 }
 
 resource "azurerm_network_interface" "asav-mgmt" {
@@ -180,6 +187,7 @@ resource "azurerm_network_interface" "asav-mgmt" {
   count               = var.instances
   location            = var.location
   resource_group_name = local.rg_name
+  tags                = var.tags
 
   ip_configuration {
     name                          = "mgmt%{if var.instances > 1}${count.index}%{endif}"
@@ -208,6 +216,7 @@ resource "azurerm_network_interface" "asav-outside" {
     subnet_id                     = azurerm_subnet.subnets["external"].id
     private_ip_address_allocation = "Dynamic"
   }
+  tags = var.tags
 }
 
 resource "azurerm_network_interface_security_group_association" "ASAv_Outside_NSG" {
@@ -227,6 +236,7 @@ resource "azurerm_network_interface" "asav-inside" {
     subnet_id                     = azurerm_subnet.subnets["internal"].id
     private_ip_address_allocation = "Dynamic"
   }
+  tags = var.tags
 }
 
 resource "azurerm_network_interface_security_group_association" "ASAv_Inside_NSG" {
@@ -283,6 +293,7 @@ resource "azurerm_virtual_machine" "asav-instance" {
 
   }
   zones = var.instances == 1 ? [] : [local.az_distribution[count.index]]
+  tags  = var.tags
 }
 
 ################################################################################################################################
@@ -302,6 +313,7 @@ resource "azurerm_lb" "asa-ilb" {
     private_ip_address            = cidrhost(azurerm_subnet.subnets["internal"].address_prefixes[0], 100)
     private_ip_address_allocation = "Static"
   }
+  tags = var.tags
 }
 
 resource "azurerm_lb_backend_address_pool" "ILB-Backend-Pool" {
@@ -350,6 +362,7 @@ resource "azurerm_public_ip" "ELB-PublicIP" {
   resource_group_name = local.rg_name
   allocation_method   = "Static"
   sku                 = "Standard"
+  tags                = var.tags
 }
 
 resource "azurerm_lb" "asa-elb" {
@@ -363,6 +376,7 @@ resource "azurerm_lb" "asa-elb" {
     name                 = "ExternalIPAddress"
     public_ip_address_id = azurerm_public_ip.ELB-PublicIP[0].id
   }
+  tags = var.tags
 }
 
 resource "azurerm_lb_backend_address_pool" "ELB-Backend-Pool" {

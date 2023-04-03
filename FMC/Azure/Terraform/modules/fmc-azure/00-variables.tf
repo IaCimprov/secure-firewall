@@ -129,3 +129,10 @@ variable "virtual_machine_fmcv_admin_passw" {
   description = "FMC vm admin password"
   default     = "123Cisco@123!"
 }
+variable "tags" {
+  description = "tags to map with resources ."
+  type        = map(any)
+  default = {
+    env = "dev"
+  }
+}

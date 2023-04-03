@@ -1,23 +1,23 @@
 # Terraform Template to install a Single ASAv in a location using BYOL AMI with Mgmt + Three interfaces in a New Resource Group
 ################################################################################################################################
 
-################################################################################################################################
-# Provider
-################################################################################################################################
-
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "=2.56.0"
-    }
-  }
-}
-
-# Configure the Microsoft Azure Provider
-provider "azurerm" {
-  features {}
-}
+# ################################################################################################################################
+# # Provider
+# ################################################################################################################################
+#
+# terraform {
+#   required_providers {
+#     azurerm = {
+#       source  = "hashicorp/azurerm"
+#       version = "=2.56.0"
+#     }
+#   }
+# }
+#
+# # Configure the Microsoft Azure Provider
+# provider "azurerm" {
+#   features {}
+# }
 
 ################################################################################################################################
 # Resource Group Creation
@@ -28,6 +28,7 @@ provider "azurerm" {
 resource "azurerm_resource_group" "asav" {
   name     = var.RGName
   location = var.location
+  tags     = var.tags
 }
 data "template_file" "startup_file" {
   template = file(var.day-0-config)
@@ -42,34 +43,35 @@ resource "azurerm_virtual_network" "asav" {
   location            = var.location
   resource_group_name = azurerm_resource_group.asav.name
   address_space       = [join("", tolist([var.IPAddressPrefix, ".0.0/16"]))]
+  tags                = var.tags
 }
 
 resource "azurerm_subnet" "asav-management" {
   name                 = "${var.prefix}-management"
   resource_group_name  = azurerm_resource_group.asav.name
   virtual_network_name = azurerm_virtual_network.asav.name
-  address_prefixes       = [join("", tolist([var.IPAddressPrefix, ".0.0/24"]))]
+  address_prefixes     = [join("", tolist([var.IPAddressPrefix, ".0.0/24"]))]
 }
 
 resource "azurerm_subnet" "asav-inside1" {
   name                 = "${var.prefix}-inside1"
   resource_group_name  = azurerm_resource_group.asav.name
   virtual_network_name = azurerm_virtual_network.asav.name
-  address_prefixes       = [join("", tolist([var.IPAddressPrefix, ".1.0/24"]))]
+  address_prefixes     = [join("", tolist([var.IPAddressPrefix, ".1.0/24"]))]
 }
 
 resource "azurerm_subnet" "asav-inside2" {
   name                 = "${var.prefix}-inside2"
   resource_group_name  = azurerm_resource_group.asav.name
   virtual_network_name = azurerm_virtual_network.asav.name
-  address_prefixes       = [join("", tolist([var.IPAddressPrefix, ".2.0/24"]))]
+  address_prefixes     = [join("", tolist([var.IPAddressPrefix, ".2.0/24"]))]
 }
 
 resource "azurerm_subnet" "asav-dmz" {
   name                 = "${var.prefix}-dmz"
   resource_group_name  = azurerm_resource_group.asav.name
   virtual_network_name = azurerm_virtual_network.asav.name
-  address_prefixes       = [join("", tolist([var.IPAddressPrefix, ".3.0/24"]))]
+  address_prefixes     = [join("", tolist([var.IPAddressPrefix, ".3.0/24"]))]
 }
 
 ################################################################################################################################
@@ -80,7 +82,7 @@ resource "azurerm_route_table" "ASA_FW_RT_management" {
   name                = "${var.prefix}-RT-Subnet0"
   location            = var.location
   resource_group_name = azurerm_resource_group.asav.name
-
+  tags                = var.tags
 }
 
 resource "azurerm_route_table" "ASA_FW_RT_inside1" {
@@ -89,18 +91,19 @@ resource "azurerm_route_table" "ASA_FW_RT_inside1" {
   resource_group_name = azurerm_resource_group.asav.name
 
   route {
-    name           = "Route-Subnet3-To-ASAv"
-    address_prefix = join("", tolist([var.IPAddressPrefix, ".2.0/24"]))
-    next_hop_type  = "VirtualAppliance"
+    name                   = "Route-Subnet3-To-ASAv"
+    address_prefix         = join("", tolist([var.IPAddressPrefix, ".2.0/24"]))
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = azurerm_network_interface.asav-inside1.private_ip_address
   }
 
   route {
-    name           = "Route-Subnet4-To-ASAv"
-    address_prefix = join("", tolist([var.IPAddressPrefix, ".3.0/24"]))
-    next_hop_type  = "VirtualAppliance"
+    name                   = "Route-Subnet4-To-ASAv"
+    address_prefix         = join("", tolist([var.IPAddressPrefix, ".3.0/24"]))
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = azurerm_network_interface.asav-inside1.private_ip_address
   }
+  tags = var.tags
 }
 
 resource "azurerm_route_table" "ASA_FW_RT_inside2" {
@@ -109,18 +112,19 @@ resource "azurerm_route_table" "ASA_FW_RT_inside2" {
   resource_group_name = azurerm_resource_group.asav.name
 
   route {
-    name           = "Route-Subnet1-To-ASAv"
-    address_prefix = join("", tolist([var.IPAddressPrefix, ".1.0/24"]))
-    next_hop_type  = "VirtualAppliance"
+    name                   = "Route-Subnet1-To-ASAv"
+    address_prefix         = join("", tolist([var.IPAddressPrefix, ".1.0/24"]))
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = azurerm_network_interface.asav-inside2.private_ip_address
   }
 
   route {
-    name           = "Route-Subnet4-To-ASAv"
-    address_prefix = join("", tolist([var.IPAddressPrefix, ".3.0/24"]))
-    next_hop_type  = "VirtualAppliance"
+    name                   = "Route-Subnet4-To-ASAv"
+    address_prefix         = join("", tolist([var.IPAddressPrefix, ".3.0/24"]))
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = azurerm_network_interface.asav-inside2.private_ip_address
   }
+  tags = var.tags
 }
 resource "azurerm_route_table" "ASA_FW_RT_dmz" {
   name                = "${var.prefix}-RT-Subnet4"
@@ -128,35 +132,36 @@ resource "azurerm_route_table" "ASA_FW_RT_dmz" {
   resource_group_name = azurerm_resource_group.asav.name
 
   route {
-    name           = "Route-Subnet1-To-ASAv"
-    address_prefix = join("", tolist([var.IPAddressPrefix, ".1.0/24"]))
-    next_hop_type  = "VirtualAppliance"
+    name                   = "Route-Subnet1-To-ASAv"
+    address_prefix         = join("", tolist([var.IPAddressPrefix, ".1.0/24"]))
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = azurerm_network_interface.asav-dmz.private_ip_address
   }
 
   route {
-    name           = "Route-Subnet4-To-ASAv"
-    address_prefix = join("", tolist([var.IPAddressPrefix, ".2.0/24"]))
-    next_hop_type  = "VirtualAppliance"
+    name                   = "Route-Subnet4-To-ASAv"
+    address_prefix         = join("", tolist([var.IPAddressPrefix, ".2.0/24"]))
+    next_hop_type          = "VirtualAppliance"
     next_hop_in_ip_address = azurerm_network_interface.asav-dmz.private_ip_address
   }
+  tags = var.tags
 }
 
 resource "azurerm_subnet_route_table_association" "management" {
-  subnet_id                 = azurerm_subnet.asav-management.id
-  route_table_id            = azurerm_route_table.ASA_FW_RT_management.id
+  subnet_id      = azurerm_subnet.asav-management.id
+  route_table_id = azurerm_route_table.ASA_FW_RT_management.id
 }
 resource "azurerm_subnet_route_table_association" "inside1" {
-  subnet_id                 = azurerm_subnet.asav-inside1.id
-  route_table_id            = azurerm_route_table.ASA_FW_RT_inside1.id
+  subnet_id      = azurerm_subnet.asav-inside1.id
+  route_table_id = azurerm_route_table.ASA_FW_RT_inside1.id
 }
 resource "azurerm_subnet_route_table_association" "inside2" {
-  subnet_id                 = azurerm_subnet.asav-inside2.id
-  route_table_id            = azurerm_route_table.ASA_FW_RT_inside2.id
+  subnet_id      = azurerm_subnet.asav-inside2.id
+  route_table_id = azurerm_route_table.ASA_FW_RT_inside2.id
 }
 resource "azurerm_subnet_route_table_association" "dmz" {
-  subnet_id                 = azurerm_subnet.asav-dmz.id
-  route_table_id            = azurerm_route_table.ASA_FW_RT_dmz.id
+  subnet_id      = azurerm_subnet.asav-dmz.id
+  route_table_id = azurerm_route_table.ASA_FW_RT_dmz.id
 }
 
 ################################################################################################################################
@@ -164,21 +169,22 @@ resource "azurerm_subnet_route_table_association" "dmz" {
 ################################################################################################################################
 
 resource "azurerm_network_security_group" "allow-all" {
-    name                = "${var.prefix}-allow-all"
-    location            = var.location
-    resource_group_name = azurerm_resource_group.asav.name
+  name                = "${var.prefix}-allow-all"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.asav.name
 
-    security_rule {
-        name                       = "TCP-Allow-All"
-        priority                   = 1001
-        direction                  = "Inbound"
-        access                     = "Allow"
-        protocol                   = "*"
-        source_port_range          = "*"
-        destination_port_range     = "*"
-        source_address_prefix      = var.source-address
-        destination_address_prefix = "*"
-    }
+  security_rule {
+    name                       = "TCP-Allow-All"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "*"
+    source_port_range          = "*"
+    destination_port_range     = "*"
+    source_address_prefix      = var.source-address
+    destination_address_prefix = "*"
+  }
+  tags = var.tags
 }
 
 ################################################################################################################################
@@ -186,9 +192,9 @@ resource "azurerm_network_security_group" "allow-all" {
 ################################################################################################################################
 
 resource "azurerm_network_interface" "asav-management" {
-  name                      = "${var.prefix}-management"
-  location                  = var.location
-  resource_group_name       = azurerm_resource_group.asav.name
+  name                = "${var.prefix}-management"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.asav.name
 
   ip_configuration {
     name                          = "management"
@@ -196,13 +202,15 @@ resource "azurerm_network_interface" "asav-management" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.asav-mgmt-interface.id
   }
+  tags = var.tags
 }
 
 resource "azurerm_public_ip" "asav-mgmt-interface" {
-    name                         = "instance1-public-ip"
-    location                     = var.location
-    resource_group_name          = azurerm_resource_group.asav.name
-    allocation_method            = "Dynamic"
+  name                = "instance1-public-ip"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.asav.name
+  allocation_method   = "Dynamic"
+  tags                = var.tags
 }
 
 resource "azurerm_network_interface_security_group_association" "ASAv_NIC_NSG" {
@@ -212,41 +220,44 @@ resource "azurerm_network_interface_security_group_association" "ASAv_NIC_NSG" {
 
 
 resource "azurerm_network_interface" "asav-inside1" {
-  name                      = "${var.prefix}-inside1"
-  location                  = var.location
-  resource_group_name       = azurerm_resource_group.asav.name
-  depends_on                = [azurerm_network_interface.asav-management]
-  
-  enable_ip_forwarding      = true
+  name                = "${var.prefix}-inside1"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.asav.name
+  depends_on          = [azurerm_network_interface.asav-management]
+
+  enable_ip_forwarding = true
   ip_configuration {
     name                          = "inside1"
     subnet_id                     = azurerm_subnet.asav-inside1.id
     private_ip_address_allocation = "Dynamic"
   }
+  tags = var.tags
 }
 resource "azurerm_network_interface" "asav-inside2" {
-  name                      = "${var.prefix}-inside2"
-  location                  = var.location
-  resource_group_name       = azurerm_resource_group.asav.name
-  depends_on                = [azurerm_network_interface.asav-inside1]
-  enable_ip_forwarding      = true
+  name                 = "${var.prefix}-inside2"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.asav.name
+  depends_on           = [azurerm_network_interface.asav-inside1]
+  enable_ip_forwarding = true
   ip_configuration {
     name                          = "inside2"
     subnet_id                     = azurerm_subnet.asav-inside2.id
     private_ip_address_allocation = "Dynamic"
   }
+  tags = var.tags
 }
 resource "azurerm_network_interface" "asav-dmz" {
-  name                      = "${var.prefix}-dmz"
-  location                  = var.location
-  resource_group_name       = azurerm_resource_group.asav.name
-  depends_on                = [azurerm_network_interface.asav-inside2]
-  enable_ip_forwarding      = true
+  name                 = "${var.prefix}-dmz"
+  location             = var.location
+  resource_group_name  = azurerm_resource_group.asav.name
+  depends_on           = [azurerm_network_interface.asav-inside2]
+  enable_ip_forwarding = true
   ip_configuration {
     name                          = "dmz"
     subnet_id                     = azurerm_subnet.asav-dmz.id
     private_ip_address_allocation = "Dynamic"
   }
+  tags = var.tags
 }
 
 ################################################################################################################################
@@ -254,29 +265,29 @@ resource "azurerm_network_interface" "asav-dmz" {
 ################################################################################################################################
 
 resource "azurerm_virtual_machine" "asav-instance" {
-  name                  = "${var.prefix}-vm"
-  location              = var.location
-  resource_group_name   = azurerm_resource_group.asav.name
-  
+  name                = "${var.prefix}-vm"
+  location            = var.location
+  resource_group_name = azurerm_resource_group.asav.name
+
   depends_on = [
     azurerm_network_interface.asav-inside1,
     azurerm_network_interface.asav-inside2,
     azurerm_network_interface.asav-dmz
   ]
-  
+
   primary_network_interface_id = azurerm_network_interface.asav-management.id
-  network_interface_ids = [azurerm_network_interface.asav-management.id,azurerm_network_interface.asav-inside1.id,
-                           azurerm_network_interface.asav-inside2.id,azurerm_network_interface.asav-dmz.id]
-  vm_size               = var.VMSize
+  network_interface_ids = [azurerm_network_interface.asav-management.id, azurerm_network_interface.asav-inside1.id,
+  azurerm_network_interface.asav-inside2.id, azurerm_network_interface.asav-dmz.id]
+  vm_size = var.VMSize
 
 
-  delete_os_disk_on_termination = true
+  delete_os_disk_on_termination    = true
   delete_data_disks_on_termination = true
 
   plan {
-    name = "asav-azure-byol"
+    name      = "asav-azure-byol"
     publisher = "cisco"
-    product = "cisco-asav"
+    product   = "cisco-asav"
   }
 
   storage_image_reference {
@@ -295,13 +306,13 @@ resource "azurerm_virtual_machine" "asav-instance" {
     computer_name  = var.instancename
     admin_username = var.instanceusername
     admin_password = var.instancepassword
-    custom_data = data.template_file.startup_file.rendered
+    custom_data    = data.template_file.startup_file.rendered
   }
   os_profile_linux_config {
     disable_password_authentication = false
-    
+
   }
-  
+  tags = var.tags
 }
 
 ################################################################################################################################

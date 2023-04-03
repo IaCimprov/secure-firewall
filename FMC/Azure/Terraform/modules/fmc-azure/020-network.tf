@@ -7,9 +7,9 @@ resource "azurerm_virtual_network" "vnet" {
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
 
-  tags = {
+  tags = merge({
     environment = "production"
-  }
+  }, var.tags)
 }
 
 # Create subnet
@@ -48,9 +48,9 @@ resource "azurerm_public_ip" "public_ip_ubuntu1" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
 
-  tags = {
-    environment = "ubuntu"
-  }
+  tags = merge({
+    environment = "FMCv"
+  }, var.tags)
 }
 
 resource "azurerm_public_ip" "public_ip_fmc1" {
@@ -59,9 +59,9 @@ resource "azurerm_public_ip" "public_ip_fmc1" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
 
-  tags = {
+  tags = merge({
     environment = "FMCv"
-  }
+  }, var.tags)
 }
 
 resource "azurerm_public_ip" "public_ip_win1" {
@@ -70,9 +70,9 @@ resource "azurerm_public_ip" "public_ip_win1" {
   resource_group_name = azurerm_resource_group.rg.name
   allocation_method   = "Dynamic"
 
-  tags = {
+  tags = merge({
     environment = "win"
-  }
+  }, var.tags)
 }
 
 # Create network interface
@@ -88,9 +88,9 @@ resource "azurerm_network_interface" "win" {
     public_ip_address_id          = azurerm_public_ip.public_ip_win1.id
   }
 
-  tags = {
+  tags = merge({
     environment = "win"
-  }
+  }, var.tags)
 }
 
 resource "azurerm_network_interface" "nic" {
@@ -105,9 +105,9 @@ resource "azurerm_network_interface" "nic" {
     public_ip_address_id          = azurerm_public_ip.public_ip_ubuntu1.id
   }
 
-  tags = {
+  tags = merge({
     environment = "ubuntu"
-  }
+  }, var.tags)
 }
 
 resource "azurerm_network_interface" "nic-fmc" {
@@ -122,9 +122,9 @@ resource "azurerm_network_interface" "nic-fmc" {
     public_ip_address_id          = azurerm_public_ip.public_ip_fmc1.id
   }
 
-  tags = {
+  tags = merge({
     environment = "FMCv"
-  }
+  }, var.tags)
 }
 
 # Connect the security group to the network interface
