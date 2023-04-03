@@ -26,7 +26,7 @@ provider "azurerm" {
 
 # Create a resource group
 module "fmc-azure" {
-  source                           = "../module/fmc-azure"
+  source                           = "../modules/fmc-azure"
   virtual_machine_admin_username   = "cisco"
   virtual_machine_admin_passw      = "tqtqtug1452@@"
   virtual_machine_fmcv_admin_passw = "123Cisco@1"
