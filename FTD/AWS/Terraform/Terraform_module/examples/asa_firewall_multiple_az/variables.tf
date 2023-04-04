@@ -246,6 +246,6 @@ variable "reg_key" {
 
 variable "create_fmc" {
   description = "Boolean value to create FMC or not"
-  type = Bool
+  type = bool
   default = true
 }
