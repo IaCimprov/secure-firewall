@@ -20,6 +20,7 @@ variable "Version" {
   default = "915.1.1"
 }
 variable "VMSize" {
+  type    = string
   default = "Standard_D3_v2"
 }
 variable "RGName" {

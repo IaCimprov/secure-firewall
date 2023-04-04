@@ -58,6 +58,7 @@ variable "source_address" {
 }
 
 variable "azs" {
+  type = list(any)
   default = [
     "1",
     "2",
