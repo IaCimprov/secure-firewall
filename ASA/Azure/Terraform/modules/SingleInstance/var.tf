@@ -12,27 +12,34 @@ variable "source-address" {
   default = "*"
 }
 variable "IPAddressPrefix" {
+  type    = string
   default = "10.10"
 }
 variable "Version" {
+  type    = string
   default = "915.1.1"
 }
 variable "VMSize" {
   default = "Standard_D3_v2"
 }
 variable "RGName" {
+  type    = string
   default = "cisco-asav-RG"
 }
 variable "instancename" {
+  type    = string
   default = "cisco-asav"
 }
 variable "instanceusername" {
+  type    = string
   default = "cisco"
 }
 variable "instancepassword" {
+  type    = string
   default = "Pa$$w0rd1234"
 }
 variable "day-0-config" {
+  type    = string
   default = "ASA_Running_Config.txt"
 }
 

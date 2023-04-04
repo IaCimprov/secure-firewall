@@ -1,8 +1,8 @@
-variable "aws_access_key" {} 
+variable "aws_access_key" {}
 variable "aws_secret_key" {}
 
 variable "region" {
-  type = string
+  type    = string
   default = "us-east-1"
 }
 
@@ -22,14 +22,14 @@ variable "create_igw" {
 
 variable "availability_zone_count" {
   description = "Spacified availablity zone count . "
-  type    = number
-  default = 2
+  type        = number
+  default     = 2
 }
 
 variable "instances_per_az" {
   description = "Spacified no. of instance per az wants to be create . "
-  type    = number
-  default = 1
+  type        = number
+  default     = 1
 }
 
 variable "mgmt_subnet_cidr" {
@@ -52,13 +52,13 @@ variable "ftd_outside_ip" {
 
 variable "diag_subnet_cidr" {
   description = "List out diagonastic Subnet CIDR . "
-  type    = list(string)
-  default = []
+  type        = list(string)
+  default     = []
 }
 
 variable "ftd_diag_ip" {
   description = "List out FTD Diagonostic IPs . "
-  default = []
+  default     = []
 }
 
 variable "inside_subnet_cidr" {
@@ -72,8 +72,8 @@ variable "ftd_inside_ip" {
 
 variable "fmc_ip" {
   description = "List out FMCv IPs . "
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "mgmt_subnet_name" {
@@ -167,14 +167,14 @@ variable "fmc_mgmt_interface_sg" {
 
 variable "use_ftd_eip" {
   description = "boolean value to use EIP on FTD or not"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "use_fmc_eip" {
   description = "boolean value to use EIP on FMC or not"
-  type = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "mgmt_interface_id" {
@@ -199,53 +199,53 @@ variable "diag_interface_id" {
 
 variable "fmc_interface_id" {
   description = "Spacified FMCv interface . "
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "FTD_version" {
   description = "specified FTD version."
-  type = string
-  default = "ftdv-7.1.0"
+  type        = string
+  default     = "ftdv-7.1.0"
 }
 
 variable "FMC_version" {
   description = "specified FMC version."
-  type = string
-  default = "fmcv-7.1.0"
+  type        = string
+  default     = "fmcv-7.1.0"
 }
 
 variable "keyname" {
   description = "specified key pair name to connect firewall ."
-  type = string
+  type        = string
 }
 
 variable "ftd_size" {
   description = "specified server instance type ."
-  type = string
-  default = "c5.4xlarge"
+  type        = string
+  default     = "c5.4xlarge"
 }
 
 variable "fmc_admin_password" {
   description = "spacified fmc admin password ."
-  type = string
-  default = "Cisco@123"
+  type        = string
+  default     = "Cisco@123"
 }
 
 variable "fmc_hostname" {
   description = "spacified fmc hostname ."
-  type = string
-  default = "FMC-01"
+  type        = string
+  default     = "FMC-01"
 }
 
 variable "reg_key" {
   description = "spacified reg key ."
-  type = string
-  default = "cisco"
+  type        = string
+  default     = "cisco"
 }
 
 variable "create_fmc" {
   description = "Boolean value to create FMC or not"
-  type = Bool
-  default = true
+  type        = bool
+  default     = true
 }
