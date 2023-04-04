@@ -112,26 +112,36 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Terraform validate FMC/Azure
+        if: always()
         uses: dflook/terraform-validate@v1
         id: validate
         with:
           path: "FMC/Azure/Terraform/standalone"
 
       - name: Terraform validate FMC/AWS
+        if: always()
         uses: dflook/terraform-validate@v1
         id: validate1
         with:
           path: "FMC/AWS/Standalone"
  
       - name: Terraform validate FMC/GCP
+        if: always()
         uses: dflook/terraform-validate@v1
         id: validate2
         with:
-          path: "FMC/GCP/Terraform"          
+          path: "FMC/GCP/Terraform"
+
+      - name: Terraform validate ASA/Azure
+        if: always()
+        uses: dflook/terraform-validate@v1
+        with:
+          path: "ASA/Azure/Terraform/modules/MultiInstanceMultiAZ/"          
 
       - name: Validate failed
         if: ${{ failure() && steps.validate.outputs.failure-reason == 'validate-failed' }}
         run: echo "terraform validate failed"
+  
   
 # Rewrite Terraform configuration files to a canonical format and style
   
