@@ -116,7 +116,7 @@ jobs:
         uses: dflook/terraform-validate@v1
         id: validate
         with:
-          path: "FMC/Azure/Terraform/standalone"
+          path: "FMC/Azure/Terraform/terraform_modules/exemple"
 
       - name: Terraform validate FMC/AWS
         if: always()
@@ -136,7 +136,7 @@ jobs:
         if: always()
         uses: dflook/terraform-validate@v1
         with:
-          path: "ASA/Azure/Terraform/MultiInstanceMultiAZ"          
+          path: "ASA/Azure/Terraform/terraform_modules/exemple/MultiInstanceMultiAZ/"          
 
       - name: Validate failed
         if: ${{ failure() && steps.validate.outputs.failure-reason == 'validate-failed' }}
