@@ -24,7 +24,7 @@ provider "azurerm" {
 ################################################################################################################################
 
 module "asa-azure" {
-  source = "../modules/SingleInstance"
+  source = "../../modules/SingleInstance"
   // If you dont provide any value, it will take the default value
   // Tags to map with resources
   tags = {
