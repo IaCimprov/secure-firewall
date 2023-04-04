@@ -136,7 +136,7 @@ jobs:
         if: always()
         uses: dflook/terraform-validate@v1
         with:
-          path: "ASA/Azure/Terraform/modules/MultiInstanceMultiAZ/"          
+          path: "ASA/Azure/Terraform/MultiInstanceMultiAZ"          
 
       - name: Validate failed
         if: ${{ failure() && steps.validate.outputs.failure-reason == 'validate-failed' }}
