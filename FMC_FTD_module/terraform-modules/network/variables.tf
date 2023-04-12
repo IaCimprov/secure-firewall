@@ -47,6 +47,7 @@ variable "source_address" {
 }
 
 variable "instances" {
+  type        = number
   description = "Number of FTDv instances"
 }
 
@@ -57,6 +58,7 @@ variable "create_fmc" {
 }
 
 variable "azs" {
+  type        = list
   default = [
     "1",
     "2",
@@ -66,6 +68,7 @@ variable "azs" {
 }
 
 variable "prefix" {
+  type        = string
   default     = "cisco-FTDv"
   description = "Prefix to prepend resource names"
 }
@@ -85,6 +88,7 @@ variable "tags" {
 }
 
 variable "fmc_prefix" {
+  type        = string
   default     = "cisco-FMCv"
   description = "Prefix to prepend ot FMC resource names"
 }

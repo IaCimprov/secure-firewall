@@ -1,6 +1,6 @@
 variable "instances" {
   description = "Number of FTDv instances"
-  type = number
+  type        = number
 }
 
 variable "rg_name" {
@@ -9,27 +9,27 @@ variable "rg_name" {
 }
 
 variable "location" {
-  type    = string
+  type        = string
   description = "Spacified location of LB."
- }
+}
 
 variable "subnet_id" {
   description = "Spacified private subnet."
- }
+}
 
- variable "private_ip_address_ext" {
+variable "private_ip_address_ext" {
   description = "External Private ip address to assign to frontend. Use it with type = private"
-   type = list
-  
+  type        = list(any)
+
 }
 
- variable "private_ip_address_int" {
+variable "private_ip_address_int" {
   description = "internal Private ip address to assign to frontend. Use it with type = private"
-   type = list
-  
+  type        = list(any)
+
 }
 
- variable "virtual_network_id" {
+variable "virtual_network_id" {
   description = "Spacified Vnet ID"
   type        = string
 }

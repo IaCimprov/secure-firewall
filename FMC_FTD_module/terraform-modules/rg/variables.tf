@@ -11,8 +11,8 @@ variable "create_rg" {
 
 variable "rg_name" {
   description = "Azure Resource Group"
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
 
 variable "location" {
