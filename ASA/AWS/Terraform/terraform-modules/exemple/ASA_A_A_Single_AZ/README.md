@@ -1,4 +1,4 @@
-# ASAv multiple instances in a multiple AZ
+# ASAv multiple instances in a single AZ
 
 ## Prerequisite
 
