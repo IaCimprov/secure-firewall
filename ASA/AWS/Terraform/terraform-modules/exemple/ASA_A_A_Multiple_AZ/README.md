@@ -2,9 +2,9 @@
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
-Before running terraform apply, generate an EC2 key pair that can be used to SSH into EC2 instances
-You can do this manually using the AWS Console or the AWS CLI (aws ec2 create-key-pair --key-name <keyname>)
-After that inset name of key to module variable
+###Before running terraform apply, generate an EC2 key pair that can be used to SSH into EC2 instances
+###You can do this manually using the AWS Console or the AWS CLI (aws ec2 create-key-pair --key-name <keyname>)
+###After that inset name of key to module variable
 
 | Name | Version |
 |------|---------|
