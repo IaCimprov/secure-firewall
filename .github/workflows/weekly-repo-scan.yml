@@ -166,7 +166,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       
-    - name: Render terraform docs inside the USAGE.md and push changes back to PR branch
+    - name: Render terraform docs inside the Docs.md and push changes back to PR branch
       uses: Dirrk/terraform-docs@v1.0.8
       with:
         tf_docs_find_dir: .

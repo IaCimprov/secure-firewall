@@ -1,0 +1,5 @@
+  #Sensor
+  {
+      "AdminPassword": "${password}",
+      "Hostname":       "FMC-01",  
+}
