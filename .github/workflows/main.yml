@@ -116,7 +116,7 @@ jobs:
         uses: dflook/terraform-validate@v1
         id: validate
         with:
-          path: "FMC/Azure/Terraform/terraform_modules/exemple"
+          path: "FMC/Azure/Terraform/terraform_modules/examples"
 
       - name: Terraform validate FMC/AWS
         if: always()
